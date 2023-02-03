@@ -18,10 +18,10 @@ export function Home() {
           <span>0</span>
           <span>0</span>
         </S.CountdownContainer>
-        <button type="submit">
+        <S.StartButton type="submit" disabled>
           <Play />
           Começar
-        </button>
+        </S.StartButton>
       </form>
     </S.HomeContainer>
   )

@@ -46,3 +46,24 @@ export const Separator = styled.div`
   display: flex;
   justify-content: center;
 `
+export const StartButton = styled.button`
+  width: 100%;
+  border: 0;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: ${(porps) => porps.theme['green-500']};
+  color: ${(porps) => porps.theme['gray-100']};
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  &:not(:disabled):hover {
+    background-color: ${(porps) => porps.theme['green-700']};
+  }
+`
