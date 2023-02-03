@@ -15,6 +15,7 @@ export const GlobalStyle = createGlobalStyle`
 body{
     background: ${(props) => props.theme['gray-900']};
     color:${(props) => props.theme['gray-300']};
+    -webki-font-smoothing: antialised;
 }
 body,input,textarea,button{
     font-family: 'Roboto', sans-serif;
