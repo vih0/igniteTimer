@@ -7,9 +7,9 @@ export function Home() {
       <form action="">
         <S.FormContainer>
           <label htmlFor="task">Vou Trabalhar em: </label>
-          <input id="task" />
+          <S.TaskInput id="task" placeholder="Dê um nome para o seu projeto" />
           <label htmlFor="minutesAmount">durante</label>
-          <input type="number" id="minutesAmount" />
+          <S.MinutesInput type="number" id="minutesAmount" placeholder="00" />
         </S.FormContainer>
         <S.CountdownContainer>
           <span>0</span>
