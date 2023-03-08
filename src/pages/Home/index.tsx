@@ -1,4 +1,4 @@
-import { Play } from 'phosphor-react'
+import { HandPalm, Play } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import * as S from './style'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -77,6 +77,7 @@ export function Home() {
             id="task"
             list="task-sugestion"
             placeholder="Dê um nome para o seu projeto"
+            disabled={!!activeCycle}
             {...register('task')}
           />
           <datalist id="task-sugestion">
@@ -90,6 +91,7 @@ export function Home() {
             step={5}
             min={5}
             max={60}
+            disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
           />
         </S.FormContainer>
@@ -100,10 +102,17 @@ export function Home() {
           <span>{seconds[0]}</span>
           <span>{seconds[1]}</span>
         </S.CountdownContainer>
-        <S.StartButton type="submit" disabled={!task}>
-          <Play />
-          Começar
-        </S.StartButton>
+        {activeCycle ? (
+          <S.StopButton type="button">
+            <HandPalm />
+            Interromper
+          </S.StopButton>
+        ) : (
+          <S.StartButton type="submit" disabled={!task}>
+            <Play />
+            Começar
+          </S.StartButton>
+        )}
       </form>
     </S.HomeContainer>
   )
