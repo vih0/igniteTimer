@@ -3,23 +3,48 @@ import { useForm } from 'react-hook-form'
 import * as S from './style'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { useState } from 'react'
 
 const newCycleValidation = zod.object({
   task: zod.string().min(1, 'informe uma tarefa'),
   minutesAmount: zod.number().min(5).max(60),
 })
 type newCycleFormData = zod.infer<typeof newCycleValidation>
+interface Cycle {
+  id: string
+  task: string
+  minutesAmount: number
+}
 export function Home() {
-  const { register, handleSubmit, watch } = useForm<newCycleFormData>({
+  const [cycles, setCycles] = useState<Cycle[]>([])
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  const [amountSecondsPast, setAmountSecomdsPast] = useState(0)
+  const { register, handleSubmit, watch, reset } = useForm<newCycleFormData>({
     resolver: zodResolver(newCycleValidation),
     defaultValues: {
       task: '',
       minutesAmount: 0,
     },
   })
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPast : 0
+
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0')
+  const seconds = String(secondsAmount).padStart(2, '0')
 
   function handleCreateNewCycle(data: newCycleFormData) {
-    console.log(data)
+    const newCycle: Cycle = {
+      id: String(new Date().getTime()),
+      task: data.task,
+      minutesAmount: data.minutesAmount,
+    }
+    setCycles((state) => [...state, newCycle])
+    setActiveCycleId(newCycle.id)
+    reset()
   }
   const task = watch('task')
   return (
@@ -48,11 +73,11 @@ export function Home() {
           />
         </S.FormContainer>
         <S.CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
           <S.Separator>:</S.Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{seconds[0]}</span>
+          <span>{seconds[1]}</span>
         </S.CountdownContainer>
         <S.StartButton type="submit" disabled={!task}>
           <Play />
