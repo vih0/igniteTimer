@@ -16,6 +16,7 @@ interface Cycle {
   task: string
   minutesAmount: number
   start: Date
+  interrupted?: Date
 }
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
@@ -40,6 +41,19 @@ export function Home() {
       clearInterval(interval)
     }
   }, [activeCycle])
+
+  function handleInterruptCycle() {
+    setCycles(
+      cycles.map((cycle) => {
+        if (cycle.id === activeCycleId) {
+          return { ...cycle, interrupted: new Date() }
+        } else {
+          return cycle
+        }
+      }),
+    )
+    setActiveCycleId(null)
+  }
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPast : 0
 
@@ -103,7 +117,7 @@ export function Home() {
           <span>{seconds[1]}</span>
         </S.CountdownContainer>
         {activeCycle ? (
-          <S.StopButton type="button">
+          <S.StopButton type="button" onClick={handleInterruptCycle}>
             <HandPalm />
             Interromper
           </S.StopButton>
