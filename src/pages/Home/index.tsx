@@ -17,6 +17,7 @@ interface Cycle {
   minutesAmount: number
   start: Date
   interrupted?: Date
+  finished?: Date
 }
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
@@ -30,21 +31,39 @@ export function Home() {
     },
   })
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   useEffect(() => {
     let interval: number
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecomdsPast(differenceInSeconds(new Date(), activeCycle.start))
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.start,
+        )
+        if (secondsDifference === totalSeconds) {
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finished: new Date() }
+              } else {
+                return cycle
+              }
+            }),
+          )
+          clearInterval(interval)
+        } else {
+          setAmountSecomdsPast(secondsDifference)
+        }
       }, 1000)
     }
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds, activeCycleId])
 
   function handleInterruptCycle() {
-    setCycles(
-      cycles.map((cycle) => {
+    setCycles((state) =>
+      state.map((cycle) => {
         if (cycle.id === activeCycleId) {
           return { ...cycle, interrupted: new Date() }
         } else {
@@ -54,7 +73,6 @@ export function Home() {
     )
     setActiveCycleId(null)
   }
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPast : 0
 
   const minutesAmount = Math.floor(currentSeconds / 60)
